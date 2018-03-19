@@ -2,8 +2,7 @@ const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize("slack", "postgres", "postgres", {
   dialect: "postgres",
-  host: "localhost",
-  operatorsAliases: false
+  host: "localhost"
 });
 
 const models = {
