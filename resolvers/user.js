@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import _ from "lodash";
+import { tryLogin } from "../auth";
 
 const formatErrors = (e, models) => {
   if (e instanceof models.sequelize.ValidationError) {
@@ -21,6 +22,16 @@ export default {
     }
   },
   Mutation: {
+    login: (parent, args, context, info) => {
+      const { email, password } = args;
+      return tryLogin(
+        email,
+        password,
+        context.models,
+        context.SECRET,
+        context.SECRET2
+      );
+    },
     register: async (parent, args, context, info) => {
       const { models } = context;
       try {
