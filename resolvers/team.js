@@ -1,8 +1,9 @@
 import formatErrors from "../formatErrors";
+import requiresAuth from "../permissions";
 
 export default {
   Mutation: {
-    createTeam: async (parent, args, context) => {
+    createTeam: requiresAuth.createResolver(async (parent, args, context) => {
       const { models, user } = context;
 
       try {
@@ -17,6 +18,6 @@ export default {
           errors: formatErrors(error, models)
         };
       }
-    }
+    })
   }
 };
