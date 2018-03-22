@@ -1,11 +1,16 @@
 module.exports = {
-    "extends": "airbnb",
-    "plugins": ['react', "prettier", 'jsx-a11y', 'import'],
-  "rules": {
-    'react/jsx-filename-extension': 0,
-    "import/extensions": 0
+  extends: "plugin:prettier/recommended",
+  plugins: ["react", "jsx-a11y", "import"],
+  rules: {
+    "react/jsx-filename-extension": 0,
+    "import/extensions": 0,
+    "react/prop-types": 0
   },
-  "globals": {
-    "document": 1
+  globals: {
+    document: 1
+  },
+  parser: "babel-eslint",
+  env: {
+    browser: 1
   }
 };

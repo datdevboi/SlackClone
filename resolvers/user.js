@@ -12,17 +12,17 @@ const formatErrors = (e, models) => {
 
 export default {
   Query: {
-    getUser: (parent, args, context, info) => {
+    getUser: (parent, args, context) => {
       const { models } = context;
       return models.User.findOne({ where: { id: args.id } });
     },
-    allUsers: (parent, args, context, info) => {
+    allUsers: (parent, args, context) => {
       const { models } = context;
       return models.User.findAll();
     }
   },
   Mutation: {
-    login: (parent, args, context, info) => {
+    login: (parent, args, context) => {
       const { email, password } = args;
       return tryLogin(
         email,
@@ -32,27 +32,11 @@ export default {
         context.SECRET2
       );
     },
-    register: async (parent, args, context, info) => {
+    register: async (parent, args, context) => {
       const { models } = context;
       try {
-        if (args.password.length < 5 || args.password.length > 100) {
-          return {
-            ok: false,
-            errors: [
-              {
-                path: "password",
-                message:
-                  "The password need to be between 5 and 100 characters long"
-              }
-            ]
-          };
-        }
+        const user = await models.User.create(args);
 
-        const hashedPassword = await bcrypt.hash(args.password, 12);
-        const user = await models.User.create({
-          ...args,
-          password: hashedPassword
-        });
         return {
           ok: true,
           user
