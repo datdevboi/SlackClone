@@ -6,6 +6,7 @@ import decode from "jwt-decode";
 import Channels from "../components/Channels";
 import Teams from "../components/Teams";
 import AddChannelModal from "../components/AddChannelModal";
+// import { allTeamsQuery } from "../graphql/team";
 
 class SideBar extends Component {
   state = {
@@ -55,12 +56,13 @@ class SideBar extends Component {
           teamName={team.name}
           username={userName}
           channels={team.channels}
+          teamId={team.id}
           users={[{ id: 1, name: "slackbox" }, { id: 2, name: "user1" }]}
           onAddChannelClick={this.handleAddChannelClick}
         />
 
         <AddChannelModal
-          teamId={currentTeamId}
+          teamId={team.id}
           open={this.state.opendAddChannelModal}
           onClose={this.handleCloseAddChannelModal}
         />

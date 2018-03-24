@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Form, Modal, Button, Header, Image, Input } from "semantic-ui-react";
 import { withFormik } from "formik";
-import { gql } from "apollo-boost";
 import { compose, graphql } from "react-apollo";
+// import { allTeamsQuery } from "../graphql/team";
+import { gql } from "apollo-boost";
+import findIndex from "lodash/findIndex";
 
 const center = {
   position: "fixed",
@@ -49,7 +51,26 @@ const AddChannelModal = ({
 
 const createChannelMutation = gql`
   mutation($teamId: Int!, $name: String!) {
-    createChannel(teamId: $teamId, name: $name)
+    createChannel(teamId: $teamId, name: $name) {
+      ok
+      channel {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const allTeamsQuery = gql`
+  {
+    allTeams {
+      id
+      name
+      channels {
+        id
+        name
+      }
+    }
   }
 `;
 
@@ -65,6 +86,28 @@ export default compose(
         variables: {
           teamId,
           name: values.name
+        },
+        optimisticResponse: {
+          createChannel: {
+            __typename: "Mutation",
+            ok: true,
+            channel: {
+              __typename: "Channel",
+              id: -1,
+              name: values.name
+            }
+          }
+        },
+        update: (proxy, { data: { createChannel } }) => {
+          const { ok, channel } = createChannel;
+          if (!ok) {
+            return;
+          }
+          const data = proxy.readQuery({ query: allTeamsQuery });
+          console.log(data);
+          const teamIdx = findIndex(data.allTeams, ["id", teamId]);
+          data.allTeams[teamIdx].channels.push(channel);
+          proxy.writeQuery({ query: allTeamsQuery, data });
         }
       });
       onClose();
