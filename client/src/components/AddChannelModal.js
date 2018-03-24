@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Form, Modal, Button, Header, Image, Input } from "semantic-ui-react";
+import React from "react";
+import { Form, Modal, Button, Input } from "semantic-ui-react";
 import { withFormik } from "formik";
 import { compose, graphql } from "react-apollo";
 // import { allTeamsQuery } from "../graphql/team";

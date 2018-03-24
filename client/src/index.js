@@ -4,7 +4,6 @@ import registerServiceWorker from "./registerServiceWorker";
 import { ApolloClient, InMemoryCache, HttpLink } from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import { ApolloLink, from } from "apollo-link";
-import { setContext } from "apollo-link-context";
 import Routes from "./routes";
 import "semantic-ui-css/semantic.min.css";
 
