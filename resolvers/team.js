@@ -13,9 +13,15 @@ export default {
       const { models, user } = context;
 
       try {
-        await models.Team.create({ ...args, owner: user.id });
+        const team = models.Team.create({ ...args, owner: user.id });
+        await models.Channel.create({
+          name: "general",
+          public: true,
+          teamId: team.id
+        });
         return {
-          ok: true
+          ok: true,
+          team
         };
       } catch (error) {
         console.log(error);
@@ -28,6 +34,6 @@ export default {
   },
   Team: {
     channels: ({ id }, args, { models }) =>
-      models.Channel.findAll({ teamId: id })
+      models.Channel.findAll({ where: { teamId: id } })
   }
 };

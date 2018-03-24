@@ -1,45 +1,72 @@
 import React, { Component } from "react";
 import { gql } from "apollo-boost";
 import { graphql } from "react-apollo";
-import _ from "lodash";
+import findIndex from "lodash/findIndex";
 import decode from "jwt-decode";
 import Channels from "../components/Channels";
 import Teams from "../components/Teams";
+import AddChannelModal from "../components/AddChannelModal";
 
-const SideBar = ({ data: { loading, allTeams }, currentTeamId }) => {
-  if (loading) {
-    return null;
+class SideBar extends Component {
+  state = {
+    opendAddChannelModal: false
+  };
+
+  handleAddChannelClick = () => {
+    this.setState(() => ({
+      opendAddChannelModal: true
+    }));
+  };
+
+  handleCloseAddChannelModal = () => {
+    this.setState(() => ({
+      opendAddChannelModal: false
+    }));
+  };
+
+  render() {
+    const { data: { loading, allTeams }, currentTeamId } = this.props;
+
+    if (loading) {
+      return null;
+    }
+
+    const teamIdx = currentTeamId
+      ? findIndex(allTeams, ["id", parseInt(currentTeamId, 10)])
+      : 0;
+    const team = allTeams[teamIdx];
+    let userName = "";
+
+    try {
+      const token = localStorage.getItem("token");
+      const { user } = decode(token);
+      userName = user.username;
+    } catch (error) {}
+
+    return (
+      <React.Fragment>
+        <Teams
+          teams={allTeams.map(t => ({
+            id: t.id,
+            letter: t.name.charAt(0).toUpperCase()
+          }))}
+        />
+        <Channels
+          teamName={team.name}
+          username={userName}
+          channels={team.channels}
+          users={[{ id: 1, name: "slackbox" }, { id: 2, name: "user1" }]}
+          onAddChannelClick={this.handleAddChannelClick}
+        />
+
+        <AddChannelModal
+          open={this.state.opendAddChannelModal}
+          onClose={this.handleCloseAddChannelModal}
+        />
+      </React.Fragment>
+    );
   }
-
-  const teamIdx = _.findIndex(allTeams, ["id", currentTeamId]);
-  const team = allTeams[teamIdx];
-  let userName = "";
-
-  try {
-    const token = localStorage.getItem("token");
-    const { user } = decode(token);
-    userName = user.username;
-  } catch (error) {}
-
-  return (
-    <React.Fragment>
-      <Teams
-        teams={allTeams.map(t => ({
-          id: t.id,
-          letter: t.name.charAt(0).toUpperCase()
-        }))}
-      />
-      <Channels
-        teamName={team.name}
-        username={userName}
-        channels={team.channels}
-        users={[{ id: 1, name: "slackbox" }, { id: 2, name: "user1" }]}
-      >
-        Channels
-      </Channels>
-    </React.Fragment>
-  );
-};
+}
 
 const allTeamsQuery = gql`
   {
