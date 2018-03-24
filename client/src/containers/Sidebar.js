@@ -60,6 +60,7 @@ class SideBar extends Component {
         />
 
         <AddChannelModal
+          teamId={currentTeamId}
           open={this.state.opendAddChannelModal}
           onClose={this.handleCloseAddChannelModal}
         />
