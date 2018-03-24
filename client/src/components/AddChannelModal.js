@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Form, Modal, Button, Header, Image, Input } from "semantic-ui-react";
 import { withFormik } from "formik";
 import { gql } from "apollo-boost";
-import { graphql } from "react-apollo";
+import { compose, graphql } from "react-apollo";
 
 const center = {
   position: "fixed",
@@ -47,13 +47,28 @@ const AddChannelModal = ({
   </Modal>
 );
 
-export default withFormik({
-  mapPropsToValues: () => ({ name: "" }),
-  // Add a custom validation function (this can be async too!)
-
-  // Submission handler
-  handleSubmit: (values, { props, setSubmitting }) => {
-    console.log("cool cool cool");
-    setSubmitting(false);
+const createChannelMutation = gql`
+  mutation($teamId: Int!, $name: String!) {
+    createChannel(teamId: $teamId, name: $name)
   }
-})(AddChannelModal);
+`;
+
+export default compose(
+  graphql(createChannelMutation),
+  withFormik({
+    mapPropsToValues: () => ({ name: "" }),
+    handleSubmit: async (
+      values,
+      { props: { onClose, teamId, mutate }, setSubmitting }
+    ) => {
+      await mutate({
+        variables: {
+          teamId,
+          name: values.name
+        }
+      });
+      onClose();
+      setSubmitting(false);
+    }
+  })
+)(AddChannelModal);
