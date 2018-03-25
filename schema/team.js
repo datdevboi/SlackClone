@@ -13,6 +13,11 @@ type Team {
     errors: [Error!]
   }
 
+type VoidResponse {
+  ok: Boolean!
+  errors: [Error!]
+}  
+
 
 type Query {
   allTeams: [Team!]!
@@ -21,6 +26,7 @@ type Query {
 
 type Mutation {
   createTeam(name: String!): CreateTeamResponse!
+  addTeamMember(email: String!, teamId: Int!): VoidResponse!
 }
 
   

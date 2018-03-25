@@ -9,16 +9,83 @@ export default {
     )
   },
   Mutation: {
+    addTeamMember: requiresAuth.createResolver(
+      async (parent, { email, teamId }, context) => {
+        const { models, user } = context;
+        try {
+          const teamPromise = models.Team.findOne(
+            {
+              where: {
+                id: teamId
+              }
+            },
+            {
+              raw: true
+            }
+          );
+
+          const userToAddPromise = models.User.findOne(
+            {
+              where: {
+                email
+              }
+            },
+            { raw: true }
+          );
+
+          const [team, userToAdd] = await Promise.all([
+            teamPromise,
+            userToAddPromise
+          ]);
+
+          if (team.owner !== user.id) {
+            return {
+              ok: false,
+              errors: [
+                { path: "email", message: "You cannot add members to the team" }
+              ]
+            };
+          }
+
+          if (!userToAdd) {
+            return {
+              ok: false,
+              errors: [
+                {
+                  path: "email",
+                  message: "Could not find user with this email"
+                }
+              ]
+            };
+          }
+
+          await models.Member.create({
+            userId: userToAdd,
+            teamId
+          });
+
+          return {
+            ok: true
+          };
+        } catch (err) {
+          return {
+            ok: false,
+            errors: formatErrors(err)
+          };
+        }
+      }
+    ),
     createTeam: requiresAuth.createResolver(async (parent, args, context) => {
       const { models, user } = context;
 
       try {
-        const team = models.Team.create({ ...args, owner: user.id });
-        await models.Channel.create({
+        const team = await models.Team.create({ ...args, owner: user.id });
+        const channel = await models.Channel.create({
           name: "general",
           public: true,
           teamId: team.id
         });
+        console.log(channel);
         return {
           ok: true,
           team

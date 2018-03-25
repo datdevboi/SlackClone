@@ -3,11 +3,13 @@ import decode from "jwt-decode";
 import Channels from "../components/Channels";
 import Teams from "../components/Teams";
 import AddChannelModal from "../components/AddChannelModal";
+import InvitePeopleModal from "../components/InvitePeopleModal";
 // import { allTeamsQuery } from "../graphql/team";
 
 class SideBar extends Component {
   state = {
-    opendAddChannelModal: false
+    opendAddChannelModal: false,
+    openInvitePeopleModal: false
   };
 
   handleAddChannelClick = () => {
@@ -19,6 +21,19 @@ class SideBar extends Component {
   handleCloseAddChannelModal = () => {
     this.setState(() => ({
       opendAddChannelModal: false
+    }));
+  };
+
+  handleInvitePeopleClick = () => {
+    console.log("invite send");
+    this.setState(() => ({
+      openInvitePeopleModal: true
+    }));
+  };
+
+  handleCloseInvitePeopleModal = () => {
+    this.setState(() => ({
+      openInvitePeopleModal: false
     }));
   };
 
@@ -43,12 +58,19 @@ class SideBar extends Component {
           teamId={team.id}
           users={[{ id: 1, name: "slackbox" }, { id: 2, name: "user1" }]}
           onAddChannelClick={this.handleAddChannelClick}
+          onInvitePeopleClick={this.handleInvitePeopleClick}
         />
 
         <AddChannelModal
           teamId={team.id}
           open={this.state.opendAddChannelModal}
           onClose={this.handleCloseAddChannelModal}
+        />
+
+        <InvitePeopleModal
+          teamId={team.id}
+          open={this.state.openInvitePeopleModal}
+          onClose={this.handleCloseInvitePeopleModal}
         />
       </React.Fragment>
     );
