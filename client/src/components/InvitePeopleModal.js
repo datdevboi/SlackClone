@@ -1,9 +1,10 @@
 import React from "react";
-import { Form, Modal, Button, Input } from "semantic-ui-react";
+import { Form, Modal, Button, Input, Label } from "semantic-ui-react";
 import { withFormik } from "formik";
 import { compose, graphql } from "react-apollo";
 // import { allTeamsQuery } from "../graphql/team";
 import { gql } from "apollo-boost";
+import normalizeErrors from "./../normalizeErrors";
 
 const center = {
   position: "fixed",
@@ -18,7 +19,9 @@ const InvitePeopleModal = ({
   handleChange,
   handleBlur,
   handleSubmit,
-  isSubmitting
+  isSubmitting,
+  touched,
+  errors
 }) => (
   <Modal open={open} onClose={onClose} style={center}>
     <Modal.Header>Add People to your Team</Modal.Header>
@@ -34,7 +37,13 @@ const InvitePeopleModal = ({
             icon="add"
             placeholder="User's email..."
           />
+          {touched.email && errors.email ? (
+            <Label basic color="red" pointing>
+              {errors.email[0]}
+            </Label>
+          ) : null}
         </Form.Field>
+
         <Form.Group width="equal">
           <Button fluid primary disabled={isSubmitting} onClick={handleSubmit}>
             Add User
@@ -66,7 +75,7 @@ export default compose(
     mapPropsToValues: () => ({ email: "" }),
     handleSubmit: async (
       values,
-      { props: { onClose, teamId, mutate }, setSubmitting }
+      { props: { onClose, teamId, mutate }, setSubmitting, setErrors }
     ) => {
       const response = await mutate({
         variables: {
@@ -74,9 +83,16 @@ export default compose(
           email: values.email
         }
       });
-      console.log(response);
-      onClose();
-      setSubmitting(false);
+
+      const { ok, errors } = response.data.addTeamMember;
+
+      if (ok) {
+        onClose();
+        setSubmitting(false);
+      } else {
+        setSubmitting(false);
+        setErrors(normalizeErrors(errors));
+      }
     }
   })
 )(InvitePeopleModal);

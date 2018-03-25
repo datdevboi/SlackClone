@@ -25,7 +25,6 @@ class SideBar extends Component {
   };
 
   handleInvitePeopleClick = () => {
-    console.log("invite send");
     this.setState(() => ({
       openInvitePeopleModal: true
     }));
