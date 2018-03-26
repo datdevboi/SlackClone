@@ -60,16 +60,20 @@ export default {
       const { models, user } = context;
 
       try {
-        const team = await models.Team.create({ ...args, owner: user.id });
-        const channel = await models.Channel.create({
-          name: "general",
-          public: true,
-          teamId: team.id
+        const response = await models.sequelize.transaction(async () => {
+          const team = await models.Team.create({ ...args, owner: user.id });
+          const channel = await models.Channel.create({
+            name: "general",
+            public: true,
+            teamId: team.id
+          });
+
+          return team;
         });
-        console.log(channel);
+
         return {
           ok: true,
-          team
+          response
         };
       } catch (error) {
         console.log(error);

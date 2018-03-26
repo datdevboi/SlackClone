@@ -83,7 +83,6 @@ export default compose(
           teamId
         }
       });
-      console.log(response);
 
       const { ok, errors } = response.data.addTeamMember;
 
