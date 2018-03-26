@@ -29,7 +29,7 @@ const InvitePeopleModal = ({
       <Form>
         <Form.Field>
           <Input
-            value={values.name}
+            value={values.email}
             onChange={handleChange}
             onBlur={handleBlur}
             name="email"
@@ -79,10 +79,11 @@ export default compose(
     ) => {
       const response = await mutate({
         variables: {
-          teamId,
-          email: values.email
+          email: values.email,
+          teamId
         }
       });
+      console.log(response);
 
       const { ok, errors } = response.data.addTeamMember;
 

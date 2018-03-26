@@ -10,34 +10,20 @@ export default {
   },
   Mutation: {
     addTeamMember: requiresAuth.createResolver(
-      async (parent, { email, teamId }, context) => {
-        const { models, user } = context;
+      async (parent, { email, teamId }, { models, user }) => {
         try {
           const teamPromise = models.Team.findOne(
-            {
-              where: {
-                id: teamId
-              }
-            },
-            {
-              raw: true
-            }
-          );
-
-          const userToAddPromise = models.User.findOne(
-            {
-              where: {
-                email
-              }
-            },
+            { where: { id: teamId } },
             { raw: true }
           );
-
+          const userToAddPromise = models.User.findOne(
+            { where: { email } },
+            { raw: true }
+          );
           const [team, userToAdd] = await Promise.all([
             teamPromise,
             userToAddPromise
           ]);
-
           if (team.owner !== user.id) {
             return {
               ok: false,
@@ -46,7 +32,6 @@ export default {
               ]
             };
           }
-
           if (!userToAdd) {
             return {
               ok: false,
@@ -58,19 +43,15 @@ export default {
               ]
             };
           }
-
-          await models.Member.create({
-            userId: userToAdd,
-            teamId
-          });
-
+          await models.Member.create({ userId: userToAdd.id, teamId });
           return {
             ok: true
           };
         } catch (err) {
+          console.log(err);
           return {
             ok: false,
-            errors: formatErrors(err, models)
+            errors: formatErrors(err)
           };
         }
       }
