@@ -44,14 +44,16 @@ const ViewTeam = ({
         }))}
         team={team}
       />
-      <Header channelName={channel.name} />
-      <Messages channelId={channel.id}>
-        <ul className="message-list">
-          <li />
-          <li />
-        </ul>
-      </Messages>
-      <SendMessage channelName={channel.name} />
+      {channel && <Header channelName={channel.name} />}
+      {channel && (
+        <Messages channelId={channel.id}>
+          <ul className="message-list">
+            <li />
+            <li />
+          </ul>
+        </Messages>
+      )}
+      {channel && <SendMessage channelName={channel.name} />}
     </AppLayout>
   );
 };

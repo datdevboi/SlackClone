@@ -40,7 +40,7 @@ class CreateTeam extends Component {
 
     const { ok, errors, team } = response.data.createTeam;
 
-    console.log(errors);
+    console.log(response);
     if (ok) {
       this.props.history.push(`/view-team/${team.id}`);
     } else {

@@ -51,7 +51,7 @@ export default {
           console.log(err);
           return {
             ok: false,
-            errors: formatErrors(err)
+            errors: formatErrors(err, models)
           };
         }
       }
@@ -62,7 +62,7 @@ export default {
       try {
         const response = await models.sequelize.transaction(async () => {
           const team = await models.Team.create({ ...args, owner: user.id });
-          const channel = await models.Channel.create({
+          await models.Channel.create({
             name: "general",
             public: true,
             teamId: team.id
@@ -73,7 +73,7 @@ export default {
 
         return {
           ok: true,
-          response
+          team: response
         };
       } catch (error) {
         console.log(error);
