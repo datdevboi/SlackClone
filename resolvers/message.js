@@ -1,6 +1,19 @@
 import requiresAuth from "../permissions";
+import { PubSub, withFilter } from "graphql-subscriptions";
+
+const pubsub = new PubSub();
+
+const NEW_CHANNEL_MESSAGE = "NEW_CHANNEL_MESSAGE";
 
 export default {
+  Subscription: {
+    newChannelMessage: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(NEW_CHANNEL_MESSAGE),
+        (payload, args) => payload.channelId === args.channelId
+      )
+    }
+  },
   Message: {
     user: ({ userId }, args, { models }) =>
       models.User.findOne({ where: { id: userId } })
@@ -28,7 +41,15 @@ export default {
       async (parent, args, context, info) => {
         const { models, user } = context;
         try {
-          await models.Message.create({ ...args, userId: user.id });
+          const message = await models.Message.create({
+            ...args,
+            userId: user.id
+          });
+          pubsub.publish(NEW_CHANNEL_MESSAGE, {
+            channelId: args.channelId,
+            newChannelMessage: message.dataValues
+          });
+
           return true;
         } catch (error) {
           console.log(error);

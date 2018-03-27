@@ -6,7 +6,7 @@ import path from "path";
 import jwt from "jsonwebtoken";
 import { fileLoader, mergeTypes, mergeResolvers } from "merge-graphql-schemas";
 import { execute, subscribe } from "graphql";
-import { PubSub } from "graphql-subscriptions";
+
 import { SubscriptionServer } from "subscriptions-transport-ws";
 import { createServer } from "http";
 import cors from "cors";
