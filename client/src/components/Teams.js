@@ -34,8 +34,8 @@ const TeamListItem = styled.li`
   }
 `;
 
-const team = ({ id, letter }) => (
-  <Link key={`team-${id}`} to={`/view-team/${id}`}>
+const team = ({ id, letter }, index) => (
+  <Link key={`team-${id}${index}`} to={`/view-team/${id}`}>
     <TeamListItem>{letter}</TeamListItem>
   </Link>
 );
