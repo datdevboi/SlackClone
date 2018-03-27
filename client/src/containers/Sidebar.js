@@ -12,27 +12,22 @@ class SideBar extends Component {
     openInvitePeopleModal: false
   };
 
-  handleAddChannelClick = () => {
-    this.setState(() => ({
-      opendAddChannelModal: true
+  toogleAddChannelModal = e => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    this.setState(prevState => ({
+      opendAddChannelModal: !prevState.opendAddChannelModal
     }));
   };
 
-  handleCloseAddChannelModal = () => {
-    this.setState(() => ({
-      opendAddChannelModal: false
-    }));
-  };
-
-  handleInvitePeopleClick = () => {
-    this.setState(() => ({
-      openInvitePeopleModal: true
-    }));
-  };
-
-  handleCloseInvitePeopleModal = () => {
-    this.setState(() => ({
-      openInvitePeopleModal: false
+  toogleInvitePeopleModal = e => {
+    if (e) {
+      e.preventDefault();
+    }
+    this.setState(prevState => ({
+      openInvitePeopleModal: !prevState.openInvitePeopleModal
     }));
   };
 
@@ -56,20 +51,20 @@ class SideBar extends Component {
           channels={team.channels}
           teamId={team.id}
           users={[{ id: 1, name: "slackbox" }, { id: 2, name: "user1" }]}
-          onAddChannelClick={this.handleAddChannelClick}
-          onInvitePeopleClick={this.handleInvitePeopleClick}
+          onAddChannelClick={this.toogleAddChannelModal}
+          onInvitePeopleClick={this.toogleInvitePeopleModal}
         />
 
         <AddChannelModal
           teamId={team.id}
           open={this.state.opendAddChannelModal}
-          onClose={this.handleCloseAddChannelModal}
+          onClose={this.toogleAddChannelModal}
         />
 
         <InvitePeopleModal
           teamId={team.id}
           open={this.state.openInvitePeopleModal}
-          onClose={this.handleCloseInvitePeopleModal}
+          onClose={this.toogleInvitePeopleModal}
         />
       </React.Fragment>
     );
