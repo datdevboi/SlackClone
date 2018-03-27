@@ -5,9 +5,13 @@ import { makeExecutableSchema } from "graphql-tools";
 import path from "path";
 import jwt from "jsonwebtoken";
 import { fileLoader, mergeTypes, mergeResolvers } from "merge-graphql-schemas";
+import { execute, subscribe } from "graphql";
+import { PubSub } from "graphql-subscriptions";
+import { SubscriptionServer } from "subscriptions-transport-ws";
+import { createServer } from "http";
 import cors from "cors";
-import models from "./models";
 import { refreshTokens } from "./auth";
+import models from "./models";
 
 const SECRET = "foijdmgikjmnsdghgmnikjjankdhgi";
 const SECRET2 = "FAFDFJOIGJG515415454";
@@ -73,7 +77,21 @@ app.use(
 );
 
 app.use("/graphiql", graphiqlExpress({ endpointURL: graphqlEndpoint }));
+const server = createServer(app);
 
 models.sequelize.sync().then(() => {
-  app.listen(8081);
+  server.listen(8081, () => {
+    // eslint-disable-next-line
+    new SubscriptionServer(
+      {
+        execute,
+        subscribe,
+        schema
+      },
+      {
+        server,
+        path: "/subscriptions"
+      }
+    );
+  });
 });

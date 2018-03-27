@@ -6,4 +6,6 @@ export default styled.div`
   grid-row: 2;
   padding-left: 20px;
   padding-right: 20px;
+  display: flex;
+  overflow-y: auto;
 `;
