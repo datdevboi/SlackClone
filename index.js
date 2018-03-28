@@ -76,7 +76,13 @@ app.use(
   }))
 );
 
-app.use("/graphiql", graphiqlExpress({ endpointURL: graphqlEndpoint }));
+app.use(
+  "/graphiql",
+  graphiqlExpress({
+    endpointURL: graphqlEndpoint,
+    subscriptionsEndpoint: "ws//localhost:8081/subscriptions"
+  })
+);
 const server = createServer(app);
 
 models.sequelize.sync().then(() => {
@@ -86,7 +92,38 @@ models.sequelize.sync().then(() => {
       {
         execute,
         subscribe,
-        schema
+        schema,
+        onConnect: async (connectionParams, webSocket) => {
+          if (connectionParams.token && connectionParams.refreshToken) {
+            let user = null;
+            try {
+              const payload = jwt.verify(connectionParams.token, SECRET);
+              user = payload.user;
+            } catch (err) {
+              const newTokens = await refreshTokens(
+                connectionParams.token,
+                connectionParams.refreshToken,
+                models,
+                SECRET,
+                SECRET2
+              );
+
+              user = newTokens.user;
+            }
+            if (!user) {
+              throw new Error("Invaid auth tokens");
+            }
+            const member = await models.Member.findOne({
+              where: { teamId: 1, userId: user.id }
+            });
+
+            if (!member) {
+              throw new Error("Missing auth tokens");
+            }
+
+            return true;
+          }
+        }
       },
       {
         server,

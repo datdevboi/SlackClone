@@ -45,7 +45,11 @@ const httpLinkWithMiddlewares = from([
 const wsLink = new WebSocketLink({
   uri: `ws://localhost:8081/subscriptions`,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: {
+      token: localStorage.getItem("token"),
+      refreshToken: localStorage.getItem("refreshToken")
+    }
   }
 });
 
