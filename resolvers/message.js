@@ -15,8 +15,12 @@ export default {
     }
   },
   Message: {
-    user: ({ userId }, args, { models }) =>
-      models.User.findOne({ where: { id: userId } })
+    user: ({ user, userId }, args, { models }) => {
+      if (user) {
+        return user;
+      }
+      return models.User.findOne({ where: { id: userId } });
+    }
   },
   Query: {
     messages: requiresAuth.createResolver(
@@ -45,10 +49,23 @@ export default {
             ...args,
             userId: user.id
           });
-          pubsub.publish(NEW_CHANNEL_MESSAGE, {
-            channelId: args.channelId,
-            newChannelMessage: message.dataValues
-          });
+          const asyncFunc = async () => {
+            const currentUser = await models.User.findOne({
+              where: {
+                id: user.id
+              }
+            });
+
+            pubsub.publish(NEW_CHANNEL_MESSAGE, {
+              channelId: args.channelId,
+              newChannelMessage: {
+                ...message.dataValues,
+                user: currentUser.dataValues
+              }
+            });
+          };
+
+          asyncFunc();
 
           return true;
         } catch (error) {
