@@ -5,14 +5,14 @@ export default {
   Mutation: {
     createChannel: requiresAuth.createResolver(
       async (parent, args, context, info) => {
-        const { models } = context;
+        const { models, user } = context;
         try {
-          const team = await models.Team.findOne(
-            { where: { id: args.teamId } },
+          const member = await models.Member.findOne(
+            { where: { userId: user.id, teamId: args.teamId } },
             { raw: true }
           );
 
-          if (team.owner !== context.user.id) {
+          if (!member.admin) {
             return {
               ok: false,
               errors: [

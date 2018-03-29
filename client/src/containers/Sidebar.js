@@ -32,27 +32,17 @@ class SideBar extends Component {
   };
 
   render() {
-    const { teams, team } = this.props;
-
-    let userName = "";
-    let isOwner = true;
-
-    try {
-      const token = localStorage.getItem("token");
-      const { user } = decode(token);
-      userName = user.username;
-      isOwner = user.id === team.owner;
-    } catch (error) {}
+    const { teams, team, username } = this.props;
 
     return (
       <React.Fragment>
         <Teams teams={teams} />
         <Channels
           teamName={team.name}
-          username={userName}
+          username={username}
           channels={team.channels}
           teamId={team.id}
-          isOwner={isOwner}
+          isOwner={team.admin}
           users={[{ id: 1, name: "slackbox" }, { id: 2, name: "user1" }]}
           onAddChannelClick={this.toogleAddChannelModal}
           onInvitePeopleClick={this.toogleInvitePeopleModal}
