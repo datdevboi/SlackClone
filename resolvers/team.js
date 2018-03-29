@@ -2,26 +2,6 @@ import formatErrors from "../formatErrors";
 import requiresAuth from "../permissions";
 
 export default {
-  Query: {
-    allTeams: requiresAuth.createResolver(
-      async (parent, args, { models, user }) =>
-        models.Team.findAll({ where: { owner: user.id } }, { raw: true })
-    ),
-    inviteTeams: requiresAuth.createResolver(
-      async (parent, args, { models, user }) =>
-        models.Team.findAll(
-          {
-            include: [
-              {
-                model: models.User,
-                where: { id: user.id }
-              }
-            ]
-          },
-          { raw: true }
-        )
-    )
-  },
   Mutation: {
     addTeamMember: requiresAuth.createResolver(
       async (parent, { email, teamId }, { models, user }) => {
@@ -80,6 +60,12 @@ export default {
             name: "general",
             public: true,
             teamId: team.id
+          });
+
+          await models.Member.create({
+            teamId: team.id,
+            userId: user.id,
+            admin: true
           });
 
           return team;

@@ -61,14 +61,20 @@ const createChannelMutation = gql`
   }
 `;
 
-const allTeamsQuery = gql`
+const meQuery = gql`
   {
-    allTeams {
+    me {
       id
-      name
-      channels {
+      username
+
+      teams {
         id
         name
+        owner
+        channels {
+          id
+          name
+        }
       }
     }
   }
@@ -103,11 +109,11 @@ export default compose(
           if (!ok) {
             return;
           }
-          const data = proxy.readQuery({ query: allTeamsQuery });
+          const data = proxy.readQuery({ query: meQuery });
           console.log(data);
-          const teamIdx = findIndex(data.allTeams, ["id", teamId]);
-          data.allTeams[teamIdx].channels.push(channel);
-          proxy.writeQuery({ query: allTeamsQuery, data });
+          const teamIdx = findIndex(data.me.teams, ["id", teamId]);
+          data.me.teams[teamIdx].channels.push(channel);
+          proxy.writeQuery({ query: meQuery, data });
         }
       });
       onClose();

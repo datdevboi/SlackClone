@@ -10,13 +10,14 @@ import MessageContainer from "../containers/MessageContainer";
 import findIndex from "lodash/findIndex";
 
 const ViewTeam = ({
-  data: { loading, allTeams, inviteTeams },
+  data: { loading, me },
   match: { params: { teamId, channelId } }
 }) => {
   if (loading) {
     return null;
   }
-  const teams = [...allTeams, ...inviteTeams];
+  console.log(me);
+  const { teams } = me;
 
   if (!teams.length) {
     return <Redirect to="/create-team" />;
@@ -53,27 +54,26 @@ const ViewTeam = ({
   );
 };
 
-const allTeamsQuery = gql`
+const meQuery = gql`
   {
-    allTeams {
+    me {
       id
-      name
-      owner
-      channels {
+      username
+
+      teams {
         id
         name
-      }
-    }
-    inviteTeams {
-      id
-      name
-      owner
-      channels {
-        id
-        name
+        channels {
+          id
+          name
+        }
       }
     }
   }
 `;
 
-export default graphql(allTeamsQuery)(ViewTeam);
+export default graphql(meQuery, {
+  options: {
+    fetchPolicy: "network-only"
+  }
+})(ViewTeam);
