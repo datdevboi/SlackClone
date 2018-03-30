@@ -15,6 +15,7 @@ const ENTER_KEY = 13;
 
 const SendMessage = ({
   channelName,
+  placeholder,
   values,
   handleChange,
   handleBlur,
@@ -33,7 +34,7 @@ const SendMessage = ({
       }}
       onChange={handleChange}
       onBlur={handleBlur}
-      placeholder={`Message #${channelName}`}
+      placeholder={`Message #${placeholder}`}
     />
   </Message>
 );
@@ -44,25 +45,25 @@ const createMessageMutation = gql`
   }
 `;
 
-export default compose(
-  graphql(createMessageMutation),
-  withFormik({
-    mapPropsToValues: () => ({ message: "" }),
-    handleSubmit: async (
-      values,
-      { props: { channelId, mutate }, resetForm, setSubmitting }
-    ) => {
-      if (!values.message || !values.message.trim()) {
-        setSubmitting(false);
-        return;
-      }
-      await mutate({
-        variables: {
-          channelId,
-          text: values.message
-        }
-      });
-      resetForm(false);
+export default withFormik({
+  mapPropsToValues: () => ({ message: "" }),
+  handleSubmit: async (
+    values,
+    { props: { onSubmit, channelId, mutate }, resetForm, setSubmitting }
+  ) => {
+    if (!values.message || !values.message.trim()) {
+      setSubmitting(false);
+      return;
     }
-  })
-)(SendMessage);
+
+    await onSubmit(values.message);
+
+    // await mutate({
+    //   variables: {
+    //     channelId,
+    //     text: values.message
+    //   }
+    // });
+    resetForm(false);
+  }
+})(SendMessage);
