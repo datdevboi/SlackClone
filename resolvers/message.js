@@ -9,29 +9,26 @@ export default {
   Subscription: {
     newChannelMessage: {
       subscribe: withFilter(
-        requiresAuth.createResolver(
-          async (parent, { channelId }, { models, user }, info) => {
-            const channel = await models.Channel.findOne({
-              where: { id: channelId }
-            });
+        (parent, { channelId }, { models, user }, info) =>
+          // const channel = models.Channel.findOne({
+          //   where: { id: channelId }
+          // });
 
-            const member = await models.Member.findOne({
-              where: {
-                teamId: channel.teamId,
-                userId: user.id
-              }
-            });
+          // const member = models.Member.findOne({
+          //   where: {
+          //     teamId: channel.teamId,
+          //     userId: user.id
+          //   }
+          // });
 
-            if (!member) {
-              throw new Error(
-                "You have to be a member of the team to subscribe to its messages"
-              );
-            }
+          // if (!member) {
+          //   throw new Error(
+          //     "You have to be a member of the team to subscribe to its messages"
+          //   );
+          // }
 
-            pubsub.asyncIterator(NEW_CHANNEL_MESSAGE);
-          },
-          (payload, args) => payload.channelId === args.channelId
-        )
+          pubsub.asyncIterator(NEW_CHANNEL_MESSAGE),
+        (payload, args) => payload.channelId === args.channelId
       )
     }
   },
