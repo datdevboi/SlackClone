@@ -39,31 +39,19 @@ const SendMessage = ({
   </Message>
 );
 
-const createMessageMutation = gql`
-  mutation($channelId: Int!, $text: String!) {
-    createMessage(channelId: $channelId, text: $text)
-  }
-`;
-
 export default withFormik({
   mapPropsToValues: () => ({ message: "" }),
   handleSubmit: async (
     values,
-    { props: { onSubmit, channelId, mutate }, resetForm, setSubmitting }
+    { props: { onSubmit }, resetForm, setSubmitting }
   ) => {
     if (!values.message || !values.message.trim()) {
       setSubmitting(false);
       return;
     }
 
-    await onSubmit(values.message);
+    await onSubmit(values);
 
-    // await mutate({
-    //   variables: {
-    //     channelId,
-    //     text: values.message
-    //   }
-    // });
     resetForm(false);
   }
 })(SendMessage);

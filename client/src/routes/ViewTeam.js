@@ -10,7 +10,8 @@ import MessageContainer from "../containers/MessageContainer";
 import findIndex from "lodash/findIndex";
 
 const ViewTeam = ({
-  data: { mutate, loading, me },
+  mutate,
+  data: { loading, me },
   match: { params: { teamId, channelId } }
 }) => {
   if (loading) {
@@ -51,10 +52,10 @@ const ViewTeam = ({
       {channel && (
         <SendMessage
           placeholder={channel.name}
-          onSubmit={async text => {
+          onSubmit={async values => {
             await mutate({
               variables: {
-                text,
+                text: values.message,
                 channelId: channel.id
               }
             });
@@ -91,10 +92,10 @@ const createMessageMutation = gql`
 `;
 
 export default compose(
-  graphql(createMessageMutation),
   graphql(meQuery, {
     options: {
       fetchPolicy: "network-only"
     }
-  })
+  }),
+  graphql(createMessageMutation)
 )(ViewTeam);

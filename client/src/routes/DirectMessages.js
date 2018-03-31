@@ -10,6 +10,7 @@ import MessageContainer from "../containers/MessageContainer";
 import findIndex from "lodash/findIndex";
 
 const ViewTeam = ({
+  mutate,
   data: { loading, me },
   match: { params: { teamId, channelId } }
 }) => {
@@ -41,7 +42,7 @@ const ViewTeam = ({
       {/* <Header channelName={channel.name} />
       <MessageContainer channelId={channel.id} /> */}
 
-      <SendMessage onSubmit={() => {}} placeholder={username} />
+      <SendMessage onSubmit={values => {}} placeholder={username} />
     </AppLayout>
   );
 };
