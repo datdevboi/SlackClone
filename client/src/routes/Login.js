@@ -37,7 +37,7 @@ class Login extends Component {
     });
 
     const { ok, token, refreshToken, errors } = response.data.login;
-    console.log(errors);
+   
     if (ok) {
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);

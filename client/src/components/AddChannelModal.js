@@ -70,7 +70,7 @@ const meQuery = gql`
       teams {
         id
         name
-        owner
+        admin
         channels {
           id
           name
@@ -110,7 +110,7 @@ export default compose(
             return;
           }
           const data = proxy.readQuery({ query: meQuery });
-          console.log(data);
+
           const teamIdx = findIndex(data.me.teams, ["id", teamId]);
           data.me.teams[teamIdx].channels.push(channel);
           proxy.writeQuery({ query: meQuery, data });

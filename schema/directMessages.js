@@ -5,15 +5,16 @@ export default `
         text: String!
         sender: User!
         receiverId: Int!
+        created_at: String!
         
     }
     type Query {
-        directMessages: [DirectMessage!]!
+        directMessages(teamId: Int!, userId: Int!): [DirectMessage!]!
     }
 
 
     type Mutation {
-        createDirectMessage(recieverId: Int, text: String): Boolean!
+        createDirectMessage(receiverId: Int, text: String, teamId: Int!): Boolean!
     }
 
 `;

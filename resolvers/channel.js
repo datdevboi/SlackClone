@@ -19,12 +19,12 @@ export default {
                 {
                   path: "name",
                   message:
-                    "You have to be the owner to the team to create channels"
+                    "You have to be the admin to the team to create channels"
                 }
               ]
             };
           }
-          const channel = models.Channel.create({ ...args });
+          const channel = models.Channel.create(args);
 
           return {
             ok: true,

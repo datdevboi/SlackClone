@@ -80,7 +80,7 @@ app.use(
   "/graphiql",
   graphiqlExpress({
     endpointURL: graphqlEndpoint,
-    subscriptionsEndpoint: "ws//localhost:8081/subscriptions"
+    subscriptionsEndpoint: "ws://localhost:8081/subscriptions"
   })
 );
 const server = createServer(app);

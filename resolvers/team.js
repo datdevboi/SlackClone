@@ -55,7 +55,7 @@ export default {
 
       try {
         const response = await models.sequelize.transaction(async () => {
-          const team = await models.Team.create({ ...args, owner: user.id });
+          const team = await models.Team.create({ ...args });
           await models.Channel.create({
             name: "general",
             public: true,
