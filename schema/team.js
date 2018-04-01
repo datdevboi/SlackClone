@@ -22,6 +22,7 @@ type VoidResponse {
 type Query {
   allTeams: [Team!]!
   inviteTeams: [Team!]!
+  getTeamMembers(teamId: Int!): [User!]!
 }  
 
 

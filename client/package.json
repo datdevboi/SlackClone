@@ -7,6 +7,7 @@
     "apollo-link-context": "^1.0.7",
     "apollo-link-ws": "^1.0.7",
     "apollo-utilities": "^1.0.11",
+    "downshift": "^1.31.2",
     "formik": "^0.11.11",
     "graphql": "^0.13.2",
     "jwt-decode": "^2.2.0",

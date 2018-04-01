@@ -1,15 +1,27 @@
 import React, { Component } from "react";
-import decode from "jwt-decode";
+
 import Channels from "../components/Channels";
 import Teams from "../components/Teams";
 import AddChannelModal from "../components/AddChannelModal";
 import InvitePeopleModal from "../components/InvitePeopleModal";
+import DirectMessageModal from "../components/DirectMessageModal";
 // import { allTeamsQuery } from "../graphql/team";
 
 class SideBar extends Component {
   state = {
     opendAddChannelModal: false,
-    openInvitePeopleModal: false
+    openInvitePeopleModal: false,
+    openDirectMessageModal: false
+  };
+
+  toogleDirectMessageModal = e => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    this.setState(prevState => ({
+      openDirectMessageModal: !prevState.openDirectMessageModal
+    }));
   };
 
   toogleAddChannelModal = e => {
@@ -33,6 +45,7 @@ class SideBar extends Component {
 
   render() {
     const { teams, team, username } = this.props;
+    const { openDirectMessageModal } = this.state;
 
     return (
       <React.Fragment>
@@ -46,6 +59,12 @@ class SideBar extends Component {
           users={[{ id: 1, name: "slackbox" }, { id: 2, name: "user1" }]}
           onAddChannelClick={this.toogleAddChannelModal}
           onInvitePeopleClick={this.toogleInvitePeopleModal}
+          onDirectMessageClick={this.toogleDirectMessageModal}
+        />
+        <DirectMessageModal
+          teamId={team.id}
+          open={openDirectMessageModal}
+          onClose={this.toogleDirectMessageModal}
         />
 
         <AddChannelModal

@@ -46,7 +46,6 @@ class DirectMessageContainer extends React.Component {
 
   render() {
     const { data: { loading, directMessages } } = this.props;
-    console.log(directMessages);
 
     if (loading) {
       return null;

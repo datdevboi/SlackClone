@@ -46,7 +46,6 @@ class MessageContainer extends React.Component {
         if (!subscriptionData) {
           return prev;
         }
-        console.log(subscriptionData);
 
         return {
           ...prev,
