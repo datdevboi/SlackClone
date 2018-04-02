@@ -15,6 +15,14 @@ export default {
       )
   },
   Query: {
+    getUser: requiresAuth.createResolver(
+      async (parent, { userId }, { models }, info) =>
+        models.User.findOne({
+          where: {
+            id: userId
+          }
+        })
+    ),
     me: requiresAuth.createResolver((parent, args, context) => {
       const { models, user } = context;
       return models.User.findOne({ where: { id: user.id } });

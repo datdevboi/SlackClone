@@ -56,7 +56,7 @@ class SideBar extends Component {
           channels={team.channels}
           teamId={team.id}
           isOwner={team.admin}
-          users={[{ id: 1, name: "slackbox" }, { id: 2, name: "user1" }]}
+          users={team.directMessageMembers}
           onAddChannelClick={this.toogleAddChannelModal}
           onInvitePeopleClick={this.toogleInvitePeopleModal}
           onDirectMessageClick={this.toogleDirectMessageModal}

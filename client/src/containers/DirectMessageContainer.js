@@ -85,11 +85,11 @@ const directMessagesQuery = gql`
 `;
 
 export default graphql(directMessagesQuery, {
-  variables: props => ({
-    teamId: props.teamId,
-    userId: props.userId
-  }),
-  options: {
-    fetchPolicy: "network-only"
-  }
+  options: props => ({
+    fetchPolicy: "network-only",
+    variables: {
+      userId: props.userId,
+      teamId: props.teamId
+    }
+  })
 })(DirectMessageContainer);
