@@ -1,13 +1,18 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize("slack", "postgres", "postgres", {
-  dialect: "postgres",
-  operatorsAliases: Sequelize.Op,
-  host: "localhost",
-  define: {
-    underscored: true
+const sequelize = new Sequelize(
+  process.env.TEST_DB || "slack",
+  "postgres",
+  "postgres",
+  {
+    dialect: "postgres",
+    operatorsAliases: Sequelize.Op,
+    host: "localhost",
+    define: {
+      underscored: true
+    }
   }
-});
+);
 
 const models = {
   User: sequelize.import("./user"),
