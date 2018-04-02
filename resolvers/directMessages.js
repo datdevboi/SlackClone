@@ -1,8 +1,26 @@
-import requiresAuth from "../permissions";
+import requiresAuth, { directMessageSubscription } from "../permissions";
+import { withFilter } from "graphql-subscriptions";
 
-const NEW_CHANNEL_MESSAGE = "NEW_CHANNEL_MESSAGE";
+import pubsub from "../pubsub";
+
+const NEW_DIRECT_MESSAGE = "NEW_DIRECT_MESSAGE";
 
 export default {
+  Subscription: {
+    newDirectMessage: {
+      subscribe: directMessageSubscription.createResolver(
+        withFilter(
+          () => pubsub.asyncIterator(NEW_DIRECT_MESSAGE),
+          (payload, args, { user }) =>
+            payload.teamId === args.teamId &&
+            ((payload.senderId === user.id &&
+              payload.receiverId === args.userId) ||
+              (payload.senderId === args.userId &&
+                payload.receiverId === user.id))
+        )
+      )
+    }
+  },
   DirectMessage: {
     sender: ({ sender, senderId }, args, { models }) => {
       if (sender) {
@@ -55,23 +73,21 @@ export default {
             ...args,
             senderId: user.id
           });
-          //   const asyncFunc = async () => {
-          //     const currentUser = await models.User.findOne({
-          //       where: {
-          //         id: user.id
-          //       }
-          //     });
+          const asyncFunc = async () => {
+            pubsub.publish(NEW_DIRECT_MESSAGE, {
+              teamId: args.teamId,
+              receiverId: args.receiverId,
+              senderId: user.id,
+              newDirectMessage: {
+                ...directMessage.dataValues,
+                sender: {
+                  username: user.username
+                }
+              }
+            });
+          };
 
-          //     pubsub.publish(NEW_CHANNEL_MESSAGE, {
-          //       channelId: args.channelId,
-          //       newChannelMessage: {
-          //         ...message.dataValues,
-          //         user: currentUser.dataValues
-          //       }
-          //     });
-          //   };
-
-          //   asyncFunc();
+          asyncFunc();
 
           return true;
         } catch (error) {

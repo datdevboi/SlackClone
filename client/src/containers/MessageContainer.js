@@ -36,7 +36,7 @@ class MessageContainer extends React.Component {
     }
   }
 
-  subscribe = channelId => {
+  subscribe = channelId =>
     this.props.data.subscribeToMore({
       document: newChannelMessageSubscription,
       variables: {
@@ -53,7 +53,6 @@ class MessageContainer extends React.Component {
         };
       }
     });
-  };
 
   render() {
     const { data: { loading, messages } } = this.props;
