@@ -26,20 +26,11 @@ export default {
   },
   Query: {
     messages: requiresAuth.createResolver(
-      async (parent, { channelId }, { models, user }, info) => {
-        const messages = await models.Message.findAll(
-          {
-            order: [["created_at", "ASC"]]
-          },
-          {
-            where: { channelId }
-          },
-          {
-            raw: true
-          }
-        );
-        return messages;
-      }
+      async (parent, { channelId }, { models }) =>
+        models.Message.findAll(
+          { order: [["created_at", "ASC"]], where: { channelId } },
+          { raw: true }
+        )
     )
   },
   Mutation: {

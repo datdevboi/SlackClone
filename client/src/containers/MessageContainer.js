@@ -95,10 +95,10 @@ const messagesQuery = gql`
 `;
 
 export default graphql(messagesQuery, {
-  variables: props => ({
-    channelId: props.channelId
-  }),
-  options: {
-    fetchPolicy: "network-only"
-  }
+  options: props => ({
+    fetchPolicy: "network-only",
+    variables: {
+      channelId: props.channelId
+    }
+  })
 })(MessageContainer);
