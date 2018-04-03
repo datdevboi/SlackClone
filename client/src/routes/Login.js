@@ -7,11 +7,22 @@ import {
   Input,
   Button,
   Message,
-  Form
+  Form,
+  Divider,
+  Segment
 } from "semantic-ui-react";
+import { withRouter } from "react-router-dom";
 import { gql } from "apollo-boost";
 import { graphql } from "react-apollo";
+import styled from "styled-components";
 
+const OuterContainer = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right bottom, #433a4c, #551a8b);
+`;
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -69,42 +80,55 @@ class Login extends Component {
     }
 
     return (
-      <Container text>
-        <Header as="h2">Login</Header>
-        <Form>
-          <Form.Field error={!!emailError}>
-            <Input
-              name="email"
-              onChange={this.onChange}
-              value={email}
-              fluid
-              placeholder="Email"
-            />
-          </Form.Field>
-          <Form.Field error={!!passwordError}>
-            <Input
-              name="password"
-              onChange={this.onChange}
-              value={password}
-              type="password"
-              fluid
-              placeholder="Password"
-            />
-          </Form.Field>
+      <OuterContainer>
+        <Container text>
+          <Header as="h2">Login</Header>
+          <Form>
+            <Form.Field error={!!emailError}>
+              <Input
+                name="email"
+                onChange={this.onChange}
+                value={email}
+                fluid
+                placeholder="Email"
+              />
+            </Form.Field>
+            <Form.Field error={!!passwordError}>
+              <Input
+                name="password"
+                onChange={this.onChange}
+                value={password}
+                type="password"
+                fluid
+                placeholder="Password"
+              />
+            </Form.Field>
+            <Segment>
+              <Button fluid onClick={this.onSubmit} primary>
+                Log in
+              </Button>
+              <Divider horizontal>Or</Divider>
+              <Button
+                fluid
+                secondary
+                onClick={() => {
+                  this.props.history.push("/register");
+                }}
+              >
+                Sign Up
+              </Button>
+            </Segment>
+          </Form>
 
-          <Button onClick={this.onSubmit} primary>
-            Log in
-          </Button>
-        </Form>
-
-        {errorList.length ? (
-          <Message
-            error
-            header="There was some errors with your submission"
-            list={errorList}
-          />
-        ) : null}
-      </Container>
+          {errorList.length ? (
+            <Message
+              error
+              header="There was some errors with your submission"
+              list={errorList}
+            />
+          ) : null}
+        </Container>
+      </OuterContainer>
     );
   }
 }
@@ -123,4 +147,4 @@ const loginMutation = gql`
   }
 `;
 
-export default graphql(loginMutation)(observer(Login));
+export default withRouter(graphql(loginMutation)(observer(Login)));

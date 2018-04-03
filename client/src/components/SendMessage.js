@@ -1,14 +1,18 @@
 import React from "react";
 import styled from "styled-components";
-import { Input } from "semantic-ui-react";
+import { Input, Button, Icon } from "semantic-ui-react";
 import { withFormik } from "formik";
 import { gql } from "apollo-boost";
 import { compose, graphql } from "react-apollo";
+
+import FileUpload from "./FileUpload";
 
 const Message = styled.div`
   grid-column: 3;
   grid-row: 3;
   padding: 15px;
+  display: flex;
+  flex-direction: row;
 `;
 
 const ENTER_KEY = 13;
@@ -22,10 +26,15 @@ const SendMessage = ({
   isSubmitting
 }) => (
   <Message>
+    <FileUpload>
+      <Button icon>
+        <Icon name="plus" />
+      </Button>
+    </FileUpload>
     <Input
+      style={{ flexGrow: 1 }}
       name="message"
       value={values.message}
-      fluid
       onKeyDown={e => {
         if (e.keyCode === ENTER_KEY && !isSubmitting) {
           handleSubmit(e);
