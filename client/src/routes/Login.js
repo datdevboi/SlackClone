@@ -21,7 +21,7 @@ const OuterContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to right bottom, #433a4c, #551a8b);
+  background: linear-gradient(to right bottom, #551a8b, #433a4c);
 `;
 class Login extends Component {
   constructor(props) {
@@ -147,4 +147,4 @@ const loginMutation = gql`
   }
 `;
 
-export default withRouter(graphql(loginMutation)(observer(Login)));
+export default graphql(loginMutation)(observer(Login));

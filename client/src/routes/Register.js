@@ -5,11 +5,21 @@ import {
   Input,
   Button,
   Message,
-  Form
+  Form,
+  Divider,
+  Segment
 } from "semantic-ui-react";
 import { gql } from "apollo-boost";
 import { graphql } from "react-apollo";
+import styled from "styled-components";
 
+const OuterContainer = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right bottom, #551a8b, #433a4c);
+`;
 class Register extends React.Component {
   state = {
     username: "",
@@ -85,56 +95,70 @@ class Register extends React.Component {
     }
 
     return (
-      <Container text>
-        <Header as="h2">Register</Header>
-        <Form>
-          <Form.Field error={!!usernameError}>
-            <Input
-              name="username"
-              onChange={this.onChange}
-              value={username}
-              fluid
-              placeholder="Username"
-            />
-          </Form.Field>
+      <OuterContainer>
+        <Container text>
+          <Header as="h2">Register</Header>
+          <Form>
+            <Form.Field error={!!usernameError}>
+              <Input
+                name="username"
+                onChange={this.onChange}
+                value={username}
+                fluid
+                placeholder="Username"
+              />
+            </Form.Field>
 
-          <Form.Field error={!!emailError}>
-            <Input
-              name="email"
-              onChange={this.onChange}
-              value={email}
-              fluid
-              placeholder="Email"
-            />
-          </Form.Field>
+            <Form.Field error={!!emailError}>
+              <Input
+                name="email"
+                onChange={this.onChange}
+                value={email}
+                fluid
+                placeholder="Email"
+              />
+            </Form.Field>
 
-          <Form.Field error={!!passwordError}>
-            <Input
-              name="password"
-              onChange={this.onChange}
-              value={password}
-              type="password"
-              fluid
-              placeholder="Password"
+            <Form.Field error={!!passwordError}>
+              <Input
+                name="password"
+                onChange={this.onChange}
+                value={password}
+                type="password"
+                fluid
+                placeholder="Password"
+              />
+            </Form.Field>
+            <Segment>
+              <Button
+                onClick={this.onSubmit}
+                loading={loading ? true : null}
+                primary
+                fluid
+              >
+                Register
+              </Button>
+              <Divider horizontal>Or</Divider>
+              <Button
+                fluid
+                secondary
+                onClick={() => {
+                  this.props.history.push("/login");
+                }}
+              >
+                Log In
+              </Button>
+            </Segment>
+          </Form>
+          {errorList.length ? (
+            <Message
+              error
+              header="There was some errors with your submission"
+              list={errorList}
             />
-          </Form.Field>
-
-          <Button
-            onClick={this.onSubmit}
-            loading={loading ? true : null}
-            primary
-          >
-            Register
-          </Button>
-        </Form>
-        {errorList.length ? (
-          <Message
-            error
-            header="There was some errors with your submission"
-            list={errorList}
-          />
-        ) : null}
-      </Container>
+          ) : null}
+        </Container>
+      </OuterContainer>
     );
   }
 }
