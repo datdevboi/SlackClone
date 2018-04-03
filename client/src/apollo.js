@@ -46,10 +46,10 @@ const wsLink = new WebSocketLink({
   uri: `ws://localhost:8081/subscriptions`,
   options: {
     reconnect: true,
-    connectionParams: {
+    connectionParams: () => ({
       token: localStorage.getItem("token"),
       refreshToken: localStorage.getItem("refreshToken")
-    }
+    })
   }
 });
 

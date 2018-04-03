@@ -91,7 +91,18 @@ export default compose(
         setSubmitting(false);
       } else {
         setSubmitting(false);
-        setErrors(normalizeErrors(errors));
+        const errorLength = errors.legth;
+        const filteredErrors = errors.filter(
+          e => e.message !== "user_id must be unique"
+        );
+        if (errorLength !== filteredErrors.length) {
+          filteredErrors.push({
+            path: "email",
+            message: "this user is already part of the team"
+          });
+        }
+
+        setErrors(normalizeErrors(filteredErrors));
       }
     }
   })

@@ -20,7 +20,7 @@ export default `
 
 
   type Mutation {
-    createMessage(channelId: Int!, text: String! ): Boolean
+    createMessage(channelId: Int!, text: String! ): Boolean!
   }
 
 

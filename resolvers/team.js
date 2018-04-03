@@ -66,22 +66,30 @@ export default {
       const { models, user } = context;
 
       try {
-        const response = await models.sequelize.transaction(async () => {
-          const team = await models.Team.create({ ...args });
-          await models.Channel.create({
-            name: "general",
-            public: true,
-            teamId: team.id
-          });
+        const response = await models.sequelize.transaction(
+          async transaction => {
+            const team = await models.Team.create({ ...args }, { transaction });
+            await models.Channel.create(
+              {
+                name: "general",
+                public: true,
+                teamId: team.id
+              },
+              { transaction }
+            );
 
-          await models.Member.create({
-            teamId: team.id,
-            userId: user.id,
-            admin: true
-          });
+            await models.Member.create(
+              {
+                teamId: team.id,
+                userId: user.id,
+                admin: true
+              },
+              { transaction }
+            );
 
-          return team;
-        });
+            return team;
+          }
+        );
 
         return {
           ok: true,
