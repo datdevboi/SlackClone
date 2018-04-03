@@ -23,10 +23,11 @@ const SendMessage = ({
   handleChange,
   handleBlur,
   handleSubmit,
-  isSubmitting
+  isSubmitting,
+  channelId
 }) => (
   <Message>
-    <FileUpload>
+    <FileUpload channelId={channelId}>
       <Button icon>
         <Icon name="plus" />
       </Button>

@@ -52,6 +52,7 @@ const ViewTeam = ({
       {channel && (
         <SendMessage
           placeholder={channel.name}
+          channelId={channel.id}
           onSubmit={async values => {
             await mutate({
               variables: {

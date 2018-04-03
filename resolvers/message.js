@@ -35,11 +35,16 @@ export default {
   },
   Mutation: {
     createMessage: requiresAuth.createResolver(
-      async (parent, args, context, info) => {
-        const { models, user } = context;
+      async (parent, { file, ...args }, { models, user }, info) => {
         try {
+          const messageData = args;
+          if (file) {
+            messageData.filetype = file.type;
+            messageData.url = file.path;
+          }
+
           const message = await models.Message.create({
-            ...args,
+            ...messageData,
             userId: user.id
           });
           const asyncFunc = async () => {

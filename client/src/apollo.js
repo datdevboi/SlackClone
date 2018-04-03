@@ -3,6 +3,7 @@ import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 import { ApolloClient, InMemoryCache, HttpLink } from "apollo-boost";
 import { ApolloLink, from } from "apollo-link";
+import createFileLink from "./createFileLink";
 
 const getTokenMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers }) => ({
@@ -35,7 +36,7 @@ const setTokenAfterware = new ApolloLink((operation, forward) =>
   })
 );
 
-const httpLink = new HttpLink({ uri: "http://localhost:8081/graphql" });
+const httpLink = createFileLink({ uri: "http://localhost:8081/graphql" });
 const httpLinkWithMiddlewares = from([
   getTokenMiddleware,
   setTokenAfterware.concat(httpLink)
