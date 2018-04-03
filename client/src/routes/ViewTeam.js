@@ -45,7 +45,7 @@ const ViewTeam = ({
           letter: t.name.charAt(0).toUpperCase()
         }))}
         team={team}
-        userName={username}
+        username={username}
       />
       {channel && <Header channelName={channel.name} />}
       {channel && <MessageContainer channelId={channel.id} />}
