@@ -1,8 +1,9 @@
 import React from "react";
-import Messages from "../components/Messages";
+
 import { gql } from "apollo-boost";
 import { graphql } from "react-apollo";
 import { Comment } from "semantic-ui-react";
+import styled from "styled-components";
 import FileUpload from "../components/FileUpload";
 
 const newChannelMessageSubscription = gql`
@@ -13,10 +14,37 @@ const newChannelMessageSubscription = gql`
       user {
         username
       }
+      url
+      filetype
+
       created_at
     }
   }
 `;
+
+const Image = styled.img`
+  width: 75%;
+`;
+
+const Message = ({ message: m }) =>
+  m.url ? (
+    <Image styles={styles.image} src={m.url} alt="" />
+  ) : (
+    <Comment.Text>{m.text}</Comment.Text>
+  );
+
+const styles = {
+  FileUpload: {
+    gridColumn: 3,
+    gridRow: 2,
+    paddingLeft: "20px",
+    paddingRight: "20px",
+    display: "flex",
+    overflowY: "auto",
+    flexDirection: "column reverse"
+  }
+};
+
 class MessageContainer extends React.Component {
   componentWillMount() {
     this.unsubscribe = this.subscribe(this.props.channelId);
@@ -63,23 +91,30 @@ class MessageContainer extends React.Component {
     }
 
     return (
-      <Messages>
-        <FileUpload disableClick channelId={this.props.channelId}>
-          <Comment.Group>
-            {messages.map(m => (
-              <Comment key={`${m.id}-message`}>
-                <Comment.Content>
-                  <Comment.Author>{m.user.username}</Comment.Author>
-                  <Comment.Metadata>
-                    <div>{m.created_at}</div>
-                  </Comment.Metadata>
+      <FileUpload
+        style={styles.FileUpload}
+        disableClick
+        channelId={this.props.channelId}
+      >
+        <Comment.Group>
+          {messages.map(m => (
+            <Comment key={`${m.id}-message`}>
+              <Comment.Content>
+                <Comment.Author>{m.user.username}</Comment.Author>
+                <Comment.Metadata>
+                  <div>{m.created_at}</div>
+                </Comment.Metadata>
+                <Message message={m} />
+                {/* {m.url ? (
+                  <img styles={styles.image} src={m.url} alt="" />
+                ) : (
                   <Comment.Text>{m.text}</Comment.Text>
-                </Comment.Content>
-              </Comment>
-            ))}
-          </Comment.Group>
-        </FileUpload>
-      </Messages>
+                )} */}
+              </Comment.Content>
+            </Comment>
+          ))}
+        </Comment.Group>
+      </FileUpload>
     );
   }
 }
@@ -92,6 +127,8 @@ const messagesQuery = gql`
       user {
         username
       }
+      url
+      filetype
       created_at
     }
   }

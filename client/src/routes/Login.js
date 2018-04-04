@@ -11,7 +11,7 @@ import {
   Divider,
   Segment
 } from "semantic-ui-react";
-import { withRouter } from "react-router-dom";
+
 import { gql } from "apollo-boost";
 import { graphql } from "react-apollo";
 import styled from "styled-components";

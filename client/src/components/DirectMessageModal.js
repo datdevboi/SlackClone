@@ -2,7 +2,7 @@ import React from "react";
 import { Form, Modal, Button, Input } from "semantic-ui-react";
 import Downshift from "downshift";
 import { gql } from "apollo-boost";
-import { compose, graphql } from "react-apollo";
+import { graphql } from "react-apollo";
 import { withRouter } from "react-router-dom";
 
 const center = {

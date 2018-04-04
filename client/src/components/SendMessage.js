@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Input, Button, Icon } from "semantic-ui-react";
 import { withFormik } from "formik";
-import { gql } from "apollo-boost";
-import { compose, graphql } from "react-apollo";
 
 import FileUpload from "./FileUpload";
 

@@ -1,7 +1,7 @@
 import { split } from "apollo-link";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
-import { ApolloClient, InMemoryCache, HttpLink } from "apollo-boost";
+import { ApolloClient, InMemoryCache } from "apollo-boost";
 import { ApolloLink, from } from "apollo-link";
 import createFileLink from "./createFileLink";
 
