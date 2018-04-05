@@ -5,6 +5,7 @@ import { graphql } from "react-apollo";
 import { Comment } from "semantic-ui-react";
 import styled from "styled-components";
 import FileUpload from "../components/FileUpload";
+import RenderText from "../components/RenderText";
 
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
@@ -26,12 +27,25 @@ const Image = styled.img`
   width: 75%;
 `;
 
-const Message = ({ message: m }) =>
-  m.url ? (
-    <Image styles={styles.image} src={m.url} alt="" />
-  ) : (
-    <Comment.Text>{m.text}</Comment.Text>
-  );
+const Message = ({ message: { text, url, filetype } }) => {
+  if (url) {
+    if (filetype.startsWith("image/")) {
+      return <Image src={url} alt="" />;
+    } else if (filetype.startsWith("text")) {
+      return <RenderText url={url} />;
+    } else if (filetype.startsWith("audio/")) {
+      return (
+        <div>
+          <audio controls>
+            <source src={url} type={filetype} />
+          </audio>
+        </div>
+      );
+    }
+  }
+
+  return <Comment.Text>{text}</Comment.Text>;
+};
 
 const styles = {
   FileUpload: {
@@ -105,11 +119,6 @@ class MessageContainer extends React.Component {
                   <div>{m.created_at}</div>
                 </Comment.Metadata>
                 <Message message={m} />
-                {/* {m.url ? (
-                  <img styles={styles.image} src={m.url} alt="" />
-                ) : (
-                  <Comment.Text>{m.text}</Comment.Text>
-                )} */}
               </Comment.Content>
             </Comment>
           ))}
