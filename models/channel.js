@@ -4,6 +4,10 @@ export default function(sequelize, DataTypes) {
     public: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
+    },
+    dm: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   });
 

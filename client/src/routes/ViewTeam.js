@@ -18,7 +18,7 @@ const ViewTeam = ({
     return null;
   }
 
-  const { teams, username } = me;
+  const { teams, username, id } = me;
 
   if (!teams.length) {
     return <Redirect to="/create-team" />;
@@ -46,6 +46,7 @@ const ViewTeam = ({
         }))}
         team={team}
         username={username}
+        currentUserId={id}
       />
       {channel && <Header channelName={channel.name} />}
       {channel && <MessageContainer channelId={channel.id} />}
@@ -84,6 +85,7 @@ const meQuery = gql`
         channels {
           id
           name
+          dm
         }
       }
     }

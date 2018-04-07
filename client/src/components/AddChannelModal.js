@@ -23,7 +23,8 @@ const AddChannelModal = ({
   isSubmitting,
   resetForm,
   setFieldValue,
-  teamId
+  teamId,
+  currentUserId
 }) => (
   <Modal
     open={open}
@@ -63,6 +64,7 @@ const AddChannelModal = ({
               value={values.members}
               teamId={teamId}
               placeholder={"Add Friend"}
+              currentUserId={currentUserId}
               handleChange={(e, { value }) => setFieldValue("members", value)}
             />
           </Form.Field>
@@ -118,6 +120,7 @@ const meQuery = gql`
         channels {
           id
           name
+          dm
         }
       }
     }

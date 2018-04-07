@@ -122,7 +122,7 @@ app.use(
 app.use("/files", express.static("files"));
 const server = createServer(app);
 
-models.sequelize.sync().then(() => {
+models.sequelize.sync({}).then(() => {
   server.listen(8081, () => {
     // eslint-disable-next-line
     new SubscriptionServer(

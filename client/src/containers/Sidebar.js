@@ -44,8 +44,19 @@ class SideBar extends Component {
   };
 
   render() {
-    const { teams, team, username } = this.props;
+    const { teams, team, username, currentUserId } = this.props;
     const { openDirectMessageModal } = this.state;
+
+    const regularChannels = [];
+    const dmChannels = [];
+
+    team.channels.forEach(c => {
+      if (c.dm) {
+        dmChannels.push(c);
+      } else {
+        regularChannels.push(c);
+      }
+    });
 
     return (
       <React.Fragment>
@@ -53,10 +64,10 @@ class SideBar extends Component {
         <Channels
           teamName={team.name}
           username={username}
-          channels={team.channels}
+          channels={regularChannels}
           teamId={team.id}
           isOwner={team.admin}
-          users={team.directMessageMembers}
+          dmChannels={dmChannels}
           onAddChannelClick={this.toogleAddChannelModal}
           onInvitePeopleClick={this.toogleInvitePeopleModal}
           onDirectMessageClick={this.toogleDirectMessageModal}
@@ -65,12 +76,14 @@ class SideBar extends Component {
           teamId={team.id}
           open={openDirectMessageModal}
           onClose={this.toogleDirectMessageModal}
+          currentUserId={currentUserId}
         />
 
         <AddChannelModal
           teamId={team.id}
           open={this.state.opendAddChannelModal}
           onClose={this.toogleAddChannelModal}
+          currentUserId={currentUserId}
         />
 
         <InvitePeopleModal
