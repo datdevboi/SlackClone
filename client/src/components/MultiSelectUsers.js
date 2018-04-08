@@ -4,7 +4,7 @@ import { Dropdown } from "semantic-ui-react";
 import { gql } from "apollo-boost";
 
 const MultiSelectUsers = ({
-  data: { loading, getTeamMembers },
+  data: { loading, getTeamMembers = [] },
   value,
   handleChange,
   placeholder,

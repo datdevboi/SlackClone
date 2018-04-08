@@ -5,30 +5,50 @@ export default {
   Mutation: {
     getOrCreateChannel: requiresAuth.createResolver(
       async (parent, { teamId, members }, { models, user }, info) => {
-        members.push(user.id);
+        const member = await models.Member.findOne(
+          { where: { userId: user.id, teamId } },
+          { raw: true }
+        );
+
+        if (!member) {
+          throw new Error("Not authorized");
+        }
+        const allMembers = [...members, user.id];
+
         // check if dm channel already exist with these members
         const [data, result] = await models.sequelize.query(
-          `select c.id 
+          `select c.id , c.name
         from channels as c, pcmembers pc 
         where pc.channel_id = c.id and c.dm = true and c.public = false and c.team_id = ${teamId}
-        group by c.id 
-        having array_agg(pc.user_id) @> Array[${members.join(
+        group by c.id , c.name
+        having array_agg(pc.user_id) @> Array[${allMembers.join(
           ","
-        )}] and count(pc.user_id) = ${members.length};`,
+        )}] and count(pc.user_id) = ${allMembers.length};`,
           {
             raw: true
           }
         );
 
         if (data.length) {
-          return data[0].id;
+          return data[0];
         }
+
+        const users = await models.User.findAll({
+          raw: true,
+          where: {
+            id: {
+              [models.sequelize.Op.in]: members
+            }
+          }
+        });
+
+        const name = users.map(u => u.username).join(", ");
 
         const newChannelId = await models.sequelize.transaction(
           async transaction => {
             const channel = await models.Channel.create(
               {
-                name: "Hello",
+                name,
                 public: false,
                 dm: true,
                 teamId
@@ -38,7 +58,7 @@ export default {
               }
             );
 
-            const pcmembers = members.map(m => ({
+            const pcmembers = allMembers.map(m => ({
               userId: m,
               channelId: channel.dataValues.id
             }));
@@ -49,7 +69,7 @@ export default {
           }
         );
 
-        return newChannelId;
+        return { id: newChannelId, name };
       }
     ),
     createChannel: requiresAuth.createResolver(

@@ -5,6 +5,7 @@ import { graphql, compose } from "react-apollo";
 import { withRouter } from "react-router-dom";
 import MultiSelectUsers from "./MultiSelectUsers";
 import { withFormik } from "formik";
+import findIndex from "lodash/findIndex";
 
 const center = {
   position: "fixed",
@@ -25,7 +26,7 @@ const DirectMessageModal = ({
   setFieldValue
 }) => (
   <Modal open={open} onClose={onClose} style={center}>
-    <Modal.Header>Message User</Modal.Header>
+    <Modal.Header>Direct Messaging</Modal.Header>
     <Modal.Content>
       <Form>
         <Form.Field>
@@ -60,7 +61,30 @@ const DirectMessageModal = ({
 
 const getOrCreateChannelMutation = gql`
   mutation($teamId: Int!, $members: [Int!]) {
-    getOrCreateChannel(teamId: $teamId, members: $members)
+    getOrCreateChannel(teamId: $teamId, members: $members) {
+      id
+      name
+    }
+  }
+`;
+
+const meQuery = gql`
+  {
+    me {
+      id
+      username
+
+      teams {
+        id
+        name
+        admin
+        channels {
+          id
+          name
+          dm
+        }
+      }
+    }
   }
 `;
 
@@ -71,17 +95,41 @@ export default compose(
     mapPropsToValues: () => ({ members: [] }),
     handleSubmit: async (
       values,
-      { props: { onClose, teamId, mutate }, setSubmitting }
+      { props: { history, onClose, teamId, mutate }, resetForm, setSubmitting }
     ) => {
       const response = await mutate({
         variables: {
           teamId,
           members: values.members
+        },
+        update: (proxy, { data: { getOrCreateChannel } }) => {
+          const { id, name } = getOrCreateChannel;
+
+          const data = proxy.readQuery({ query: meQuery });
+
+          const teamIdx = findIndex(data.me.teams, ["id", teamId]);
+          const notInChannelList = data.me.teams[teamIdx].channels.every(
+            ch => ch.id !== id
+          );
+
+          if (notInChannelList) {
+            data.me.teams[teamIdx].channels.push({
+              __typename: "Channel",
+              id,
+              name,
+              dm: true
+            });
+
+            proxy.writeQuery({ query: meQuery, data });
+          }
         }
       });
-      console.log(response);
+
       onClose();
-      setSubmitting(false);
+      resetForm();
+      history.push(
+        `/view-team/${teamId}/${response.data.getOrCreateChannel.id}`
+      );
     }
   })
 )(DirectMessageModal);
