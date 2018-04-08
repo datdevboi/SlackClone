@@ -95,13 +95,13 @@ class MessageContainer extends React.Component {
 
         return {
           ...prev,
-          messages: [...prev.messages, subscriptionData.data.newChannelMessage]
+          messages: [subscriptionData.data.newChannelMessage, ...prev.messages]
         };
       }
     });
 
   render() {
-    const { data: { loading, messages } } = this.props;
+    const { data: { loading, messages }, channelId } = this.props;
 
     if (loading) {
       return null;
@@ -114,38 +114,39 @@ class MessageContainer extends React.Component {
         channelId={this.props.channelId}
       >
         <Comment.Group>
-          {this.state.hasMoreItems && (
-            <Button
-              onClick={() => {
-                this.props.data.fetchMore({
-                  variables: {
-                    channelId: this.props.channelId,
-                    offset: this.props.data.messages.length
-                  },
-                  updateQuery: (previousResult, { fetchMoreResult }) => {
-                    if (!fetchMoreResult) {
-                      return previousResult;
-                    }
+          {this.state.hasMoreItems &&
+            messages.length >= 35 && (
+              <Button
+                onClick={() => {
+                  this.props.data.fetchMore({
+                    variables: {
+                      channelId,
+                      cursor: messages[messages.length - 1].created_at
+                    },
+                    updateQuery: (previousResult, { fetchMoreResult }) => {
+                      if (!fetchMoreResult) {
+                        return previousResult;
+                      }
 
-                    if (fetchMoreResult.messages.length < 35) {
-                      this.setState(() => ({ hasMoreItems: false }));
-                    }
+                      if (fetchMoreResult.messages.length < 35) {
+                        this.setState(() => ({ hasMoreItems: false }));
+                      }
 
-                    return {
-                      ...previousResult,
-                      messages: [
-                        ...previousResult.messages,
-                        ...fetchMoreResult.messages
-                      ]
-                    };
-                  }
-                });
-              }}
-            >
-              Load More
-            </Button>
-          )}
-          {messages.map(m => (
+                      return {
+                        ...previousResult,
+                        messages: [
+                          ...previousResult.messages,
+                          ...fetchMoreResult.messages
+                        ]
+                      };
+                    }
+                  });
+                }}
+              >
+                Load More
+              </Button>
+            )}
+          {[...messages].reverse().map(m => (
             <Comment key={`${m.id}-message`}>
               <Comment.Content>
                 <Comment.Author>{m.user.username}</Comment.Author>
@@ -163,8 +164,8 @@ class MessageContainer extends React.Component {
 }
 
 const messagesQuery = gql`
-  query($offset: Int!, $channelId: Int!) {
-    messages(offset: $offset, channelId: $channelId) {
+  query($cursor: String, $channelId: Int!) {
+    messages(cursor: $cursor, channelId: $channelId) {
       id
       text
       user {
@@ -181,8 +182,7 @@ export default graphql(messagesQuery, {
   options: props => ({
     fetchPolicy: "network-only",
     variables: {
-      channelId: props.channelId,
-      offset: 0
+      channelId: props.channelId
     }
   })
 })(MessageContainer);

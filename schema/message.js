@@ -24,7 +24,7 @@ export default `
   }
 
   type Query {
-    messages(offset: Int!, channelId: Int!): [Message!]!
+    messages(cursor: String, channelId: Int!): [Message!]!
   }
 
 
