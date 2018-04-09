@@ -43,10 +43,11 @@ const httpLinkWithMiddlewares = from([
 ]);
 
 // Create a WebSocket link:
-const wsLink = new WebSocketLink({
+export const wsLink = new WebSocketLink({
   uri: `ws://localhost:8081/subscriptions`,
   options: {
     reconnect: true,
+    lazy: true,
     connectionParams: () => ({
       token: localStorage.getItem("token"),
       refreshToken: localStorage.getItem("refreshToken")

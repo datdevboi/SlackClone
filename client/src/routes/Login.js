@@ -16,6 +16,8 @@ import { gql } from "apollo-boost";
 import { graphql } from "react-apollo";
 import styled from "styled-components";
 
+import { wsLink } from "../apollo";
+
 const OuterContainer = styled.div`
   height: 100vh;
   width: 100vw;
@@ -53,6 +55,7 @@ class Login extends Component {
     if (ok) {
       localStorage.setItem("token", token);
       localStorage.setItem("refreshToken", refreshToken);
+      wsLink.subscriptionClient.tryReconnect();
       this.props.history.push("/view-team");
     } else {
       const err = {};
