@@ -18,8 +18,6 @@ const FileUpload = ({
           file
         }
       });
-
-      console.log(response);
     }}
     className="ignore"
     style={style}

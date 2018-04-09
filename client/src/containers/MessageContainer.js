@@ -85,8 +85,10 @@ class MessageContainer extends React.Component {
     ) {
       const heightBeforeRender = this.scroller.scrollHeight;
       setTimeout(() => {
-        this.scroller.scrollTop =
-          this.scroller.scrollHeight - heightBeforeRender;
+        if (this.scroller) {
+          this.scroller.scrollTop =
+            this.scroller.scrollHeight - heightBeforeRender;
+        }
       }, 100);
     }
   }
@@ -97,7 +99,7 @@ class MessageContainer extends React.Component {
     }
   }
 
-  handleScroll = e => {
+  handleScroll = () => {
     const { data: { messages, fetchMore }, channelId } = this.props;
     if (
       this.scroller &&
@@ -125,8 +127,6 @@ class MessageContainer extends React.Component {
           };
         }
       });
-
-      console.log("fetchedMored");
     }
   };
 
@@ -143,7 +143,7 @@ class MessageContainer extends React.Component {
 
         return {
           ...prev,
-          messages: [subscriptionData.data.newChannelMessage, ...prev.messages]
+          messages: [subscriptionData.newChannelMessage, ...prev.messages]
         };
       }
     });
@@ -169,17 +169,20 @@ class MessageContainer extends React.Component {
           style={{ display: "flex", flexDirection: "column-reverse" }}
         >
           <Comment.Group>
-            {[...messages].reverse().map(m => (
-              <Comment key={`${m.id}-${m.created_at}-message`}>
-                <Comment.Content>
-                  <Comment.Author>{m.user.username}</Comment.Author>
-                  <Comment.Metadata>
-                    <div>{m.created_at}</div>
-                  </Comment.Metadata>
-                  <Message message={m} />
-                </Comment.Content>
-              </Comment>
-            ))}
+            {messages
+              .slice()
+              .reverse()
+              .map(m => (
+                <Comment key={`${m.id}-message`}>
+                  <Comment.Content>
+                    <Comment.Author>{m.user.username}</Comment.Author>
+                    <Comment.Metadata>
+                      <div>{m.created_at}</div>
+                    </Comment.Metadata>
+                    <Message message={m} />
+                  </Comment.Content>
+                </Comment>
+              ))}
           </Comment.Group>
         </FileUpload>
       </div>

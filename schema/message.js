@@ -16,7 +16,7 @@ export default `
 
   input File {
     type: String!
-    path: String!
+    path: String! 
   }
 
   type Subscription {

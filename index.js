@@ -7,12 +7,14 @@ import jwt from "jsonwebtoken";
 import { fileLoader, mergeTypes, mergeResolvers } from "merge-graphql-schemas";
 import { execute, subscribe } from "graphql";
 import formidable from "formidable";
+import DataLoader from "dataloader";
 
 import { SubscriptionServer } from "subscriptions-transport-ws";
 import { createServer } from "http";
 import cors from "cors";
 import { refreshTokens } from "./auth";
 import models from "./models";
+import { channelBatcher } from "./batchFunctions";
 
 const SECRET = "foijdmgikjmnsdghgmnikjjankdhgi";
 const SECRET2 = "FAFDFJOIGJG515415454";
@@ -71,15 +73,13 @@ const fileMiddleware = (req, res, next) => {
 
   form.parse(req, (error, { operations }, files) => {
     if (error) {
-      console.log(error);
     }
 
     const document = JSON.parse(operations);
 
     if (Object.keys(files).length) {
       const { file: { type, path: filePath } } = files;
-      console.log(type);
-      console.log(filePath);
+
       document.variables.file = {
         type,
         path: filePath
@@ -106,7 +106,10 @@ app.use(
       models,
       user: req.user,
       SECRET,
-      SECRET2
+      SECRET2,
+      channelLoader: new DataLoader(ids =>
+        channelBatcher(ids, models, req.user)
+      )
     }
   }))
 );
