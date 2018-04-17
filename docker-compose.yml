@@ -4,26 +4,28 @@ services:
     image: redis
     networks: 
       - webnet
-
   db:
     image: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
     networks: 
-     - webnet
+      - webnet
     environment:
-      POSTGRES_PASSWORD: postgres 
+      POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: slack
-
+    ports: 
+     - "3030:5432"  
   web:
-    # replace username/repo:tag with your name and image details
     image: slack-clone-server
     ports:
       - "8081:8081"
     networks:
       - webnet
-    environment: 
-        DB_HOST: db
-        REDIS_HOST: redis
-    command: ["./wait-for-it.sh", "db:5432", "--", "node", "index.js"]    
+    environment:
+      DB_HOST: db
+      REDIS_HOST: redis
+    # command: ["./wait-for-it.sh", "db:5432", "--", "node", "index.js"]
+    command: ["node", "index.js"]
 networks:
   webnet:
