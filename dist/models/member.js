@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (sequelize, Datatypes) {
-  var Member = sequelize.define("member", {
+  const Member = sequelize.define("member", {
     admin: {
       type: Datatypes.BOOLEAN,
       defaultValue: false

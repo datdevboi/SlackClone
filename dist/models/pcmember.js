@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (sequelize) {
-  var PCMember = sequelize.define("pcmember", {});
+  const PCMember = sequelize.define("pcmember", {});
 
   return PCMember;
 };

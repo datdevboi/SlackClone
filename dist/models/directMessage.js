@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (sequelize, DataTypes) {
-  var DirectMessage = sequelize.define("direct_message", {
+  const DirectMessage = sequelize.define("direct_message", {
     text: DataTypes.STRING
   });
 
-  DirectMessage.associate = function (models) {
+  DirectMessage.associate = models => {
     DirectMessage.belongsTo(models.Team, {
       foreignKey: {
         name: "teamId",

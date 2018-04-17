@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (sequelize, DataTypes) {
-  var Channel = sequelize.define("channel", {
+  const Channel = sequelize.define("channel", {
     name: DataTypes.STRING,
     public: {
       type: DataTypes.BOOLEAN,
@@ -17,7 +17,7 @@ exports.default = function (sequelize, DataTypes) {
     }
   });
 
-  Channel.associate = function (models) {
+  Channel.associate = models => {
     Channel.belongsTo(models.Team, {
       foreignKey: {
         name: "teamId",

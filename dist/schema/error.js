@@ -3,4 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.default = "\n\ntype Error {\n    path: String!\n    message: String\n}\n\n";
+exports.default = `
+
+type Error {
+    path: String!
+    message: String
+}
+
+`;
