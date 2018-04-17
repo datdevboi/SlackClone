@@ -7,7 +7,7 @@ const sequelize = new Sequelize(
   {
     dialect: "postgres",
     operatorsAliases: Sequelize.Op,
-    host: "localhost",
+    host: process.env.DB_HOST || "localhost",
     define: {
       underscored: true
     }
