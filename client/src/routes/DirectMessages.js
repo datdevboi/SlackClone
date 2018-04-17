@@ -66,8 +66,7 @@ const ViewTeam = ({
   if (loading) {
     return null;
   }
-  console.log(me);
-  console.log(getUser);
+
   const { teams, username } = me;
 
   if (!teams.length) {
@@ -78,7 +77,7 @@ const ViewTeam = ({
 
   const teamIdx = teamIdInteger ? findIndex(teams, ["id", teamIdInteger]) : 0;
   const team = teamIdx === -1 ? teams[0] : teams[teamIdx];
-  console.log(team);
+
   return (
     <AppLayout>
       <Sidebar

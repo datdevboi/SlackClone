@@ -23,8 +23,8 @@ export default {
       }
       return models.User.findOne({ where: { id: userId } });
     },
-    url: ({ url }, args, context, info) =>
-      url ? `http://localhost:8081/${url}` : url
+    url: ({ url }, args, { serverUrl }, info) =>
+      url ? `${serverUrl}/${url}` : url
   },
   Query: {
     messages: requiresAuth.createResolver(
